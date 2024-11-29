@@ -6,13 +6,32 @@ from urllib.parse import urlparse
 
 
 class DocumentationSpider(scrapy.Spider):
-    name = "single_markdown_docs"
-    start_urls = ["https://dspy.ai"]  # Replace with your actual documentation URL
-    allowed_domains = ["dspy.ai"]  # Restrict to this domain
-    output_file = "documentation.md"
+    name = "dynamic_markdown_docs"
 
-    def __init__(self, *args, **kwargs):
+    def __init__(
+        self,
+        start_url=None,
+        allowed_domains=None,
+        output_file="documentation.md",
+        *args,
+        **kwargs,
+    ):
         super().__init__(*args, **kwargs)
+        if not start_url:
+            raise ValueError(
+                "You must provide a starting URL using the `-a start_url=<URL>` argument."
+            )
+        self.start_urls = [start_url]
+
+        # Parse allowed domains from the starting URL or use provided domains
+        if allowed_domains:
+            self.allowed_domains = allowed_domains.split(",")
+        else:
+            parsed_domain = urlparse(start_url).netloc
+            self.allowed_domains = [parsed_domain]
+
+        self.output_file = output_file
+
         # Initialize or overwrite the output file
         with open(self.output_file, "w", encoding="utf-8") as f:
             f.write("# Documentation\n\n")
@@ -45,8 +64,6 @@ class DocumentationSpider(scrapy.Spider):
 
     def extract_content(self, response):
         """Extract relevant content using Readability."""
-        from readability import Document
-
         try:
             doc = Document(response.text)
             relevant_html = doc.summary()
@@ -58,8 +75,6 @@ class DocumentationSpider(scrapy.Spider):
 
     def is_english(self, text, url):
         """Check if the text is in English."""
-        from langdetect import detect
-
         try:
             lang = detect(text)
             if lang != "en":
