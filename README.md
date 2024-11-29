@@ -19,12 +19,14 @@ This tool is a web scraper built using Scrapy that extracts and consolidates con
 ### Python Libraries
 - `scrapy`
 - `readability-lxml`
+- `lxml[html_clean]`
 - `langdetect`
 - `markdownify`
 
 Install the dependencies:
+
 ```bash
-pip install scrapy readability-lxml langdetect markdownify
+pip install -r requirements.txt
 ```
 
 ---
