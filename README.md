@@ -35,7 +35,7 @@ pip install -r requirements.txt
 ### Command Syntax
 
 ```
-scrapy runspider remarkdown.py \
+scrapy runspider site_to_markdown.py \
     -a start_url=<STARTING_URL> \
     [-a allowed_domains=<DOMAIN1,DOMAIN2>] \
     [-a output_file=<OUTPUT_FILENAME>]
@@ -60,7 +60,7 @@ To crawl a single domain:
 
 
 ```
-scrapy runspider remarkdown.py \
+scrapy runspider site_to_markdown.py \
     -a start_url=https://example-docs-site.com
 ```
 
@@ -69,7 +69,7 @@ scrapy runspider remarkdown.py \
 To allow crawling across multiple domains:
 
 ```
-scrapy runspider remarkdown.py \
+scrapy runspider site_to_markdown.py \
     -a start_url=https://example-docs-site.com \
     -a allowed_domains=example-docs-site.com,docs.example.com
 ```
@@ -79,7 +79,7 @@ scrapy runspider remarkdown.py \
 To specify a custom output file:
 
 ```
-scrapy runspider remarkdown.py \
+scrapy runspider site_to_markdown.py \
     -a start_url=https://example-docs-site.com \
     -a output_file=my_documentation.md
 ```
