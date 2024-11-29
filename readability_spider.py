@@ -1,11 +1,12 @@
 import scrapy
 from readability import Document
+from langdetect import detect
 import os
 
 
 class DocumentationSpider(scrapy.Spider):
     name = "readability_docs"
-    start_urls = ["https://dspy.ai/"]
+    start_urls = ["https://dspy.ai"]
     output_dir = "markdown_pages"
 
     def __init__(self, *args, **kwargs):
@@ -13,10 +14,24 @@ class DocumentationSpider(scrapy.Spider):
         os.makedirs(self.output_dir, exist_ok=True)
 
     def parse(self, response):
-        if response.url.endswith(".html"):
+        if response.url.endswith(".html"):  # Optional: Only handle HTML pages
+            # Use Readability to extract relevant content
             doc = Document(response.text)
             relevant_html = doc.summary()
             title = doc.title()
+
+            # Detect language
+            try:
+                lang = detect(relevant_html)
+            except Exception as e:
+                self.logger.warning(
+                    f"Language detection failed for {response.url}: {e}"
+                )
+                return
+
+            if lang != "en":
+                self.logger.info(f"Skipping non-English page: {response.url}")
+                return
 
             # Convert to Markdown
             from markdownify import markdownify as md
