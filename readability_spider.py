@@ -2,19 +2,20 @@ import scrapy
 from readability import Document
 from langdetect import detect
 import os
-from markdownify import markdownify as md
 from urllib.parse import urlparse
 
 
 class DocumentationSpider(scrapy.Spider):
-    name = "readability_docs"
-    start_urls = ["https://dspy.ai"]
-    allowed_domains = ["dspy.ai"]
-    output_dir = "markdown_pages"
+    name = "single_markdown_docs"
+    start_urls = ["https://dspy.ai"]  # Replace with your actual documentation URL
+    allowed_domains = ["dspy.ai"]  # Restrict to this domain
+    output_file = "documentation.md"
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        os.makedirs(self.output_dir, exist_ok=True)
+        # Initialize or overwrite the output file
+        with open(self.output_file, "w", encoding="utf-8") as f:
+            f.write("# Documentation\n\n")
 
     def parse(self, response):
         if not self.is_text_response(response):
@@ -30,7 +31,7 @@ class DocumentationSpider(scrapy.Spider):
         if not self.is_english(relevant_html, response.url):
             return
 
-        self.save_markdown(title, relevant_html)
+        self.append_to_markdown(title, relevant_html)
 
         # Follow links to other pages
         for link in response.css("a::attr(href)").getall():
@@ -44,6 +45,8 @@ class DocumentationSpider(scrapy.Spider):
 
     def extract_content(self, response):
         """Extract relevant content using Readability."""
+        from readability import Document
+
         try:
             doc = Document(response.text)
             relevant_html = doc.summary()
@@ -55,6 +58,8 @@ class DocumentationSpider(scrapy.Spider):
 
     def is_english(self, text, url):
         """Check if the text is in English."""
+        from langdetect import detect
+
         try:
             lang = detect(text)
             if lang != "en":
@@ -65,18 +70,14 @@ class DocumentationSpider(scrapy.Spider):
             self.logger.warning(f"Language detection failed for {url}: {e}")
             return False
 
-    def save_markdown(self, title, html_content):
-        """Convert HTML to Markdown and save to a file."""
-        markdown_content = md(html_content)
-        file_name = f"{self.sanitize_filename(title)}.md"
-        output_path = os.path.join(self.output_dir, file_name)
-        with open(output_path, "w", encoding="utf-8") as f:
-            f.write(f"# {title}\n\n{markdown_content}")
+    def append_to_markdown(self, title, html_content):
+        """Append extracted content to the single Markdown file."""
+        from markdownify import markdownify as md
 
-    @staticmethod
-    def sanitize_filename(name):
-        """Sanitize filenames for safe storage."""
-        return "".join(c if c.isalnum() or c in " ._-()" else "_" for c in name).strip()
+        markdown_content = md(html_content)
+        with open(self.output_file, "a", encoding="utf-8") as f:
+            f.write(f"## {title}\n\n")
+            f.write(markdown_content + "\n\n")
 
     @staticmethod
     def is_valid_url(url):
