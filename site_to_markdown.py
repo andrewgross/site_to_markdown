@@ -1,3 +1,5 @@
+import json
+import pathlib
 import scrapy
 from readability import Document
 from langdetect import detect
@@ -6,13 +8,14 @@ from urllib.parse import urlparse
 
 
 class DocumentationSpider(scrapy.Spider):
-    name = "dynamic_markdown_docs"
+    name = "site_to_markdown"
 
     def __init__(
         self,
         start_url=None,
         allowed_domains=None,
         output_file="documentation.md",
+        cookies_file=None,
         *args,
         **kwargs,
     ):
@@ -21,6 +24,7 @@ class DocumentationSpider(scrapy.Spider):
             raise ValueError(
                 "You must provide a starting URL using the `-a start_url=<URL>` argument."
             )
+        self.cookies = self.load_cookies(cookies_file)
         self.start_urls = [start_url]
 
         # Parse allowed domains from the starting URL or use provided domains
@@ -35,6 +39,23 @@ class DocumentationSpider(scrapy.Spider):
         # Initialize or overwrite the output file
         with open(self.output_file, "w", encoding="utf-8") as f:
             f.write("# Documentation\n\n")
+
+    def load_cookies(self, cookies_file: str):
+        if cookies_file is not None:
+            path = pathlib.Path(cookies_file)
+            if not path.exists():
+                raise FileNotFoundError(f"File not found: {cookies_file}")
+            with open(cookies_file, "r") as f:
+                cookie_data = json.load(f)
+            return cookie_data
+
+    def start_requests(self):
+        if self.cookies:
+            for url in self.start_urls:
+                yield scrapy.Request(url, cookies=self.cookies)
+        else:
+            for url in self.start_urls:
+                yield scrapy.Request(url)
 
     def parse(self, response):
         if not self.is_text_response(response):

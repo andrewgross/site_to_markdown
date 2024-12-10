@@ -39,6 +39,7 @@ scrapy runspider site_to_markdown.py \
     -a start_url=<STARTING_URL> \
     [-a allowed_domains=<DOMAIN1,DOMAIN2>] \
     [-a output_file=<OUTPUT_FILENAME>]
+    [-a cookies_file=<PATH_TO_COOKIE_JSON_FILE>]
 ```
 
 ### Arguments
@@ -52,6 +53,10 @@ scrapy runspider site_to_markdown.py \
 
 3. `output_file` (optional): The name of the output Markdown file. Default is documentation.md. 
     * Example: `output.md`
+
+3. `cookies_file` (optional): The path to a JSON file of cookies to use for requests. Default is None.
+    * Example: `./cookies.json`
+
 
 ## Example Usage
 ### Basic Crawling
