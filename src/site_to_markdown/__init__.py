@@ -3,7 +3,6 @@ import pathlib
 import scrapy
 from readability import Document
 from langdetect import detect
-import os
 from urllib.parse import urlparse
 
 
