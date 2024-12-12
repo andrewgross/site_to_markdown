@@ -1,6 +1,6 @@
 from scrapy.crawler import CrawlerProcess
 from scrapy.utils.project import get_project_settings
-from spider import DocumentationSpider
+from site_to_markdown.spider import DocumentationSpider
 
 
 def main():

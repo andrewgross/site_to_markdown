@@ -27,3 +27,8 @@ Issues = "https://github.com/andrewgross/site_to_markdown/issues"
 
 [project.scripts]
 site_to_markdown = "site_to_markdown.run:main"
+
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
