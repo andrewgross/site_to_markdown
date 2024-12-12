@@ -24,3 +24,6 @@ dependencies = [
 [project.urls]
 Homepage = "https://github.com/andrewgross/site_to_markdown"
 Issues = "https://github.com/andrewgross/site_to_markdown/issues"
+
+[project.scripts]
+site_to_markdown = "site_to_markdown.run:main"
