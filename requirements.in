@@ -1,0 +1,5 @@
+scrapy
+readability-lxml
+markdownify
+lxml[html_clean]
+langdetect
