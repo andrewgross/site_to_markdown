@@ -1,6 +1,6 @@
 from scrapy.crawler import CrawlerProcess
 from scrapy.utils.project import get_project_settings
-from .spider import DocumentationSpider
+from spider import DocumentationSpider
 
 
 def main():
@@ -56,3 +56,7 @@ def main():
 
     # Start the crawl
     process.start()
+
+
+if __name__ == "__main__":
+    main()
