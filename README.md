@@ -36,6 +36,7 @@ site-to-markdown \
   [-d <DOMAIN1,DOMAIN2>] \
   [-o <OUTPUT_FILENAME>] \
   [-c <PATH_TO_COOKIE_JSON_FILE>]
+  [-e <EXCLUDED_FILETYPE_1,EXCLUDED_FILETYPE_2>]
 ```
 
 ### Arguments
@@ -51,6 +52,9 @@ site-to-markdown \
     * Example: `output.md`
 
 3. `-c` (optional): The path to a JSON file of cookies to use for requests. Default is None.
+    * Example: `./cookies.json`
+
+4. `-e` (optional): A comma-separated list of file types to exclude. This filtering is done based on the URL path, not the Content-Type. 
     * Example: `./cookies.json`
 
 
@@ -79,6 +83,14 @@ To specify a custom output file:
 
 ```
 site-to-markdown -u [https://example-docs-site.com](https://example-docs-site.com) -o my_documentation.md
+```
+
+### Exclude Filetypes
+
+To exclude particular file types based on the HTTP Path.
+
+```
+site-to-markdown -u [https://example-docs-site.com](https://example-docs-site.com) -e rst.txt,md 
 ```
 
 ## Output Format
