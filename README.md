@@ -1,4 +1,4 @@
-# Markdown Documentation Scraper
+# `site_to_markdown`
 
 This tool is a web scraper built using Scrapy that extracts and consolidates content from a documentation website into a single Markdown file. It is flexible, allowing you to specify a starting URL, restrict crawling to specific domains, and define the output file name.
 
@@ -6,67 +6,63 @@ This tool is a web scraper built using Scrapy that extracts and consolidates con
 
 ## Features
 
-- Crawls a documentation website starting from a given URL.
-- Automatically extracts the main content using `Readability` while skipping non-relevant elements (headers, sidebars, etc.).
-- Consolidates all pages into a single Markdown file with structured headings.
-- Allows optional restriction to specific domains.
-- Skips non-English pages to keep the output consistent.
+* Crawls a documentation website starting from a given URL.
+* Automatically extracts the main content using `Readability` while skipping non-relevant elements (headers, sidebars, etc.).
+* Consolidates all pages into a single Markdown file with structured headings.
+* Allows optional restriction to specific domains.
+* Skips non-English pages to keep the output consistent.
 
 ---
 
-## Requirements
+## Installation
 
-### Python Libraries
-- `scrapy`
-- `readability-lxml`
-- `lxml[html_clean]`
-- `langdetect`
-- `markdownify`
-
-Install the dependencies:
+This project is now available as a pip package. Install it using:
 
 ```bash
-pip install -r requirements.txt
+pip install site-to-markdown
 ```
 
 ---
 
 ## Usage
+
+The scraper can now be run directly as a command-line tool.
+
 ### Command Syntax
 
 ```
-scrapy runspider site_to_markdown.py \
-    -a start_url=<STARTING_URL> \
-    [-a allowed_domains=<DOMAIN1,DOMAIN2>] \
-    [-a output_file=<OUTPUT_FILENAME>]
-    [-a cookies_file=<PATH_TO_COOKIE_JSON_FILE>]
+site-to-markdown \
+  -u <STARTING_URL> \
+  [-d <DOMAIN1,DOMAIN2>] \
+  [-o <OUTPUT_FILENAME>] \
+  [-c <PATH_TO_COOKIE_JSON_FILE>]
 ```
 
 ### Arguments
 
 
-1. `start_url` (required): The starting URL for the crawler. The scraper will begin its crawl from this URL.
+1. `-u` (required): The starting URL for the crawler. The scraper will begin its crawl from this URL.
     * Example: `https://example-docs-site.com`
 
-2. `allowed_domains` (optional): A comma-separated list of domains to restrict the crawl. If not provided, the scraper will infer the domain from the start_url.
+2. `-d` (optional): A comma-separated list of domains to restrict the crawl. If not provided, the scraper will infer the domain from the start_url.
     * Example: `example-docs-site.com,docs.example.com`
 
-3. `output_file` (optional): The name of the output Markdown file. Default is documentation.md. 
+3. `-o` (optional): The name of the output Markdown file. Default is documentation.md. 
     * Example: `output.md`
 
-3. `cookies_file` (optional): The path to a JSON file of cookies to use for requests. Default is None.
+3. `-c` (optional): The path to a JSON file of cookies to use for requests. Default is None.
     * Example: `./cookies.json`
 
 
 ## Example Usage
+
 ### Basic Crawling
 
 To crawl a single domain:
 
 
 ```
-scrapy runspider site_to_markdown.py \
-    -a start_url=https://example-docs-site.com
+site-to-markdown -u [https://example-docs-site.com](https://example-docs-site.com)
 ```
 
 ### Multiple Domains
@@ -74,9 +70,7 @@ scrapy runspider site_to_markdown.py \
 To allow crawling across multiple domains:
 
 ```
-scrapy runspider site_to_markdown.py \
-    -a start_url=https://example-docs-site.com \
-    -a allowed_domains=example-docs-site.com,docs.example.com
+site-to-markdown -u [https://example-docs-site.com](https://example-docs-site.com) -d example-docs-site.com,docs.example.com
 ```
 
 ### Custom Output File
@@ -84,9 +78,7 @@ scrapy runspider site_to_markdown.py \
 To specify a custom output file:
 
 ```
-scrapy runspider site_to_markdown.py \
-    -a start_url=https://example-docs-site.com \
-    -a output_file=my_documentation.md
+site-to-markdown -u [https://example-docs-site.com](https://example-docs-site.com) -o my_documentation.md
 ```
 
 ## Output Format
@@ -117,3 +109,4 @@ Content for Page 2...
 ## Contributing
 
 Contributions are welcome! Feel free to submit pull requests or report issues on GitHub.
+```
