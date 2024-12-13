@@ -15,6 +15,7 @@ class DocumentationSpider(scrapy.Spider):
         allowed_domains=None,
         output_file="documentation.md",
         cookies_file=None,
+        exclude_filetypes=None,
         *args,
         **kwargs,
     ):
@@ -32,6 +33,11 @@ class DocumentationSpider(scrapy.Spider):
         else:
             parsed_domain = urlparse(start_url).netloc
             self.allowed_domains = [parsed_domain]
+
+        if exclude_filetypes:
+            self.exclude_filetypes = exclude_filetypes.split(",")
+        else:
+            self.exclude_filetypes = []
 
         self.output_file = output_file
 
@@ -61,6 +67,10 @@ class DocumentationSpider(scrapy.Spider):
             self.logger.info(f"Skipping non-text content: {response.url}")
             return
 
+        if not self.is_valid_filetype(response):
+            self.logger.info(f"Skipping excluded filetype: {response.url}")
+            return
+
         extracted_content = self.extract_content(response)
         if not extracted_content:
             return
@@ -81,6 +91,15 @@ class DocumentationSpider(scrapy.Spider):
         """Check if the response is text-based."""
         content_type = response.headers.get("Content-Type", b"").decode("utf-8")
         return content_type.startswith("text/html")
+
+    def is_valid_filetype(self, response):
+        """Check if the response is a valid filetype."""
+        url = response.url
+        path = urlparse(url).path
+        for filetype in self.exclude_filetypes:
+            if path.endswith(filetype):
+                return False
+        return True
 
     def extract_content(self, response):
         """Extract relevant content using Readability."""

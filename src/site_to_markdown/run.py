@@ -20,6 +20,14 @@ def main():
         help="Allowed domains for scraping (comma-separated)",
     )
     parser.add_argument(
+        "-e",
+        "--exclude_filetypes",
+        type=str,
+        required=True,
+        nargs="+",
+        help="Excluded filetypes for scraping (comma-separated). Ex: rst.txt,zip",
+    )
+    parser.add_argument(
         "-o",
         "--output_file",
         type=str,
@@ -51,6 +59,7 @@ def main():
             "allowed_domains": args.allowed_domains,
             "output_file": args.output_file,
             "cookies_file": args.cookies_file,
+            "exclude_filetypes": args.exclude_filetypes,
         },
     )
 
