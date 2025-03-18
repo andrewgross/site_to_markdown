@@ -1,6 +1,14 @@
 from scrapy.crawler import CrawlerProcess
 from scrapy.utils.project import get_project_settings
 from site_to_markdown.spider import DocumentationSpider
+from urllib.parse import urlparse
+
+
+def parse_domain(value):
+    """Parse a domain from either a URL or plain domain string."""
+    if value.startswith(('http://', 'https://')):
+        return urlparse(value).netloc
+    return value
 
 
 def main():
@@ -14,16 +22,16 @@ def main():
     parser.add_argument(
         "-a",
         "--allowed_domains",
-        type=str,
+        type=parse_domain,
         required=True,
         nargs="+",
-        help="Allowed domains for scraping (comma-separated)",
+        help="Allowed domains for scraping (can be URLs or plain domains)",
     )
     parser.add_argument(
         "-e",
         "--exclude_filetypes",
         type=str,
-        required=True,
+        required=False,
         nargs="+",
         help="Excluded filetypes for scraping (comma-separated). Ex: rst.txt,zip",
     )
@@ -50,17 +58,15 @@ def main():
 
     # Create crawler process
     process = CrawlerProcess(settings)
-
-    # Pass arguments to spider through meta data
+    
+    # Pass arguments directly to spider
     process.crawl(
         DocumentationSpider,
-        meta={
-            "start_url": args.start_url,
-            "allowed_domains": args.allowed_domains,
-            "output_file": args.output_file,
-            "cookies_file": args.cookies_file,
-            "exclude_filetypes": args.exclude_filetypes,
-        },
+        start_url=args.start_url,
+        allowed_domains=",".join(args.allowed_domains),
+        output_file=args.output_file,
+        cookies_file=args.cookies_file,
+        exclude_filetypes=args.exclude_filetypes,
     )
 
     # Start the crawl

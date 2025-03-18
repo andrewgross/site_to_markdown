@@ -22,7 +22,7 @@ class DocumentationSpider(scrapy.Spider):
         super().__init__(*args, **kwargs)
         if not start_url:
             raise ValueError(
-                "You must provide a starting URL using the `-a start_url=<URL>` argument."
+                "You must provide a starting URL using the `-u <start_url>` argument."
             )
         self.cookies = self.load_cookies(cookies_file)
         self.start_urls = [start_url]
